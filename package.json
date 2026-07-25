@@ -4,6 +4,7 @@
   "version": "1.2.0",
   "description": "Bring your UniFi Protect alarm system into Apple HomeKit as a native Security System — Away, Night, Disarm, and Alarm Triggered — using a single UniFi OS API key. Arm profiles are discovered automatically. Zero runtime dependencies.",
   "license": "MIT",
+  "author": "hymond (https://github.com/hymond)",
   "main": "index.js",
   "engines": {
     "homebridge": "^1.8.0 || ^2.0.0",
