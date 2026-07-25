@@ -3,9 +3,11 @@
 </p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/@hymond/homebridge-protect-alarm"><img src="https://img.shields.io/npm/v/@hymond/homebridge-protect-alarm?style=flat-square&color=e8a86a" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@hymond/homebridge-protect-alarm"><img src="https://img.shields.io/npm/dt/@hymond/homebridge-protect-alarm?style=flat-square&color=e8a86a" alt="downloads"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2c3547?style=flat-square" alt="license"></a>
-  <img src="https://img.shields.io/badge/homebridge-%E2%89%A51.6-2c3547?style=flat-square" alt="homebridge">
-  <img src="https://img.shields.io/badge/node-%E2%89%A518-2c3547?style=flat-square" alt="node">
+  <img src="https://img.shields.io/badge/homebridge-%E2%89%A51.8-2c3547?style=flat-square" alt="homebridge">
+  <img src="https://img.shields.io/badge/node-%E2%89%A518.15-2c3547?style=flat-square" alt="node">
 </p>
 
 # HomeKit Protect Alarm
