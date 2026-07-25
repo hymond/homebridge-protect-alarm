@@ -1,10 +1,12 @@
 "use strict";
 
-const axios = require("axios");
 const https = require("https");
 
 // UniFi OS consoles use a self-signed certificate.
 const httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
+// Matches the timeout axios used before this plugin moved to native https.
+const REQUEST_TIMEOUT_MS = 15000;
 
 // armMode.status values from the Protect integration API (OpenAPI v7.1.87).
 // Anything outside this set is treated as disarmed and warned about once.
@@ -192,22 +194,61 @@ class UnifiAlarmAccessory {
 
   // ---- UniFi integration API ------------------------------------------------
 
+  // Minimal JSON request over Node's built-in https (no external dependency).
+  // Resolves with the parsed response body (null if empty). On a non-2xx status
+  // it rejects with an Error carrying `.response = { status, data }`, matching
+  // the shape describe() reports — so error logging is unchanged from axios.
+  // Note: unlike axios, this does not follow 3xx redirects; the integration API
+  // returns JSON directly and is not expected to redirect.
+  request(method, url, body) {
+    return new Promise((resolve, reject) => {
+      const payload = body === undefined ? undefined : JSON.stringify(body);
+      const headers = Object.assign({}, this.headers);
+      if (payload !== undefined) headers["Content-Length"] = Buffer.byteLength(payload);
+
+      const req = https.request(
+        url,
+        { method, agent: httpsAgent, timeout: REQUEST_TIMEOUT_MS, headers },
+        (res) => {
+          let raw = "";
+          res.setEncoding("utf8");
+          res.on("data", (chunk) => { raw += chunk; });
+          res.on("end", () => {
+            let data = null;
+            if (raw) {
+              try { data = JSON.parse(raw); } catch (e) { data = raw; }
+            }
+            const status = res.statusCode;
+            if (status >= 200 && status < 300) {
+              resolve(data);
+            } else {
+              const err = new Error(`Request failed with status ${status}`);
+              err.response = { status, data };
+              reject(err);
+            }
+          });
+        }
+      );
+
+      req.on("timeout", () => req.destroy(new Error(`Request timed out after ${REQUEST_TIMEOUT_MS}ms`)));
+      req.on("error", reject);
+
+      if (payload !== undefined) req.write(payload);
+      req.end();
+    });
+  }
+
   // GET /nvrs returns the NVR object (some firmwares wrap it in an array).
   async getNvr() {
-    const response = await axios.get(
-      `${this.baseUrl}/proxy/protect/integration/v1/nvrs`,
-      { httpsAgent, timeout: 15000, headers: this.headers }
-    );
-    const data = response.data;
+    const data = await this.request(
+      "GET", `${this.baseUrl}/proxy/protect/integration/v1/nvrs`);
     return Array.isArray(data) ? data[0] : data;
   }
 
   async getArmProfiles() {
-    const response = await axios.get(
-      `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles`,
-      { httpsAgent, timeout: 15000, headers: this.headers }
-    );
-    return Array.isArray(response.data) ? response.data : [];
+    const data = await this.request(
+      "GET", `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles`);
+    return Array.isArray(data) ? data : [];
   }
 
   // Match profiles by name unless an explicit ID was supplied in config.
@@ -373,10 +414,8 @@ class UnifiAlarmAccessory {
     try {
       if (value === C.DISARM) {
         this.currentTargetState = null;
-        await axios.post(
-          `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/disable`,
-          {}, { httpsAgent, timeout: 15000, headers: this.headers }
-        );
+        await this.request(
+          "POST", `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/disable`, {});
         this.isArmed = false;
         this.activeProfileId = null;
         this.breachActive = false;
@@ -398,15 +437,11 @@ class UnifiAlarmAccessory {
 
         this.log(`[${this.name}] Arming ${isNight ? "Night" : "Away"} profile: ${profileId}`);
         this.currentTargetState = value;
-        await axios.patch(
-          `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/settings`,
-          { armProfileId: profileId },
-          { httpsAgent, timeout: 15000, headers: this.headers }
-        );
-        await axios.post(
-          `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/enable`,
-          {}, { httpsAgent, timeout: 15000, headers: this.headers }
-        );
+        await this.request(
+          "PATCH", `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/settings`,
+          { armProfileId: profileId });
+        await this.request(
+          "POST", `${this.baseUrl}/proxy/protect/integration/v1/arm-profiles/enable`, {});
         this.isArmed = true;
         this.activeProfileId = profileId;
         this.log(`[${this.name}] Armed.`);

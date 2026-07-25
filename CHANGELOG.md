@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — 2026-07-25
+
+Maintenance release. No behavioural or config changes.
+
+### Changed
+
+- **Removed the `axios` dependency** in favour of Node's built-in `https`
+  module. The plugin now has **zero runtime dependencies** and installs as a
+  self-contained file. Request behaviour (JSON, 15s timeout, self-signed-cert
+  handling, and non-2xx error reporting) is unchanged. One minor difference:
+  the native client does not follow 3xx redirects, which the integration API
+  does not return.
+- **Raised minimum versions** to match: Homebridge `^1.8.0 || ^2.0.0` (declares
+  Homebridge v2 support explicitly) and Node `>=18.15.0`.
+
 ## 1.1.0 — 2026-07-23
 
 Fork release based on upstream 1.0.0, adding HomeKit alarm-triggered state.

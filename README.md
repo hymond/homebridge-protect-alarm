@@ -33,7 +33,7 @@ juggling — one key does everything.
   mode (Away vs Night)
 - ⏱️ **Countdown-aware** — an exit delay ("arming") is shown as armed so
   HomeKit doesn't snap back to Off mid-countdown
-- 🪶 **Tiny** — one file, one dependency
+- 🪶 **Tiny** — one file, zero runtime dependencies (native `https`)
 
 ## How HomeKit states map
 
@@ -75,7 +75,7 @@ interval kicks in only while armed:
 - A UniFi OS console running **UniFi Protect** with the alarm system set up
   (UDM, UDM Pro / SE, Cloud Key Gen2+, UNVR…)
 - At least one **arm profile** configured in Protect (e.g. *Away*, *Night*)
-- **Homebridge ≥ 1.6** on **Node ≥ 18**
+- **Homebridge ≥ 1.8** (including v2) on **Node ≥ 18.15**
 
 ## Installation
 
