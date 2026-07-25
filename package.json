@@ -1,11 +1,17 @@
 {
   "displayName": "HomeKit Protect Alarm",
-  "name": "homebridge-protect-alarm",
+  "name": "@hymond/homebridge-protect-alarm",
   "version": "1.2.0",
   "description": "Bring your UniFi Protect alarm system into Apple HomeKit as a native Security System — Away, Night, Disarm, and Alarm Triggered — using a single UniFi OS API key. Arm profiles are discovered automatically. Zero runtime dependencies.",
   "license": "MIT",
   "author": "hymond (https://github.com/hymond)",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "config.schema.json",
+    "CHANGELOG.md",
+    "images"
+  ],
   "engines": {
     "homebridge": "^1.8.0 || ^2.0.0",
     "node": ">=18.15.0"
@@ -31,5 +37,8 @@
     "url": "https://github.com/hymond/homebridge-protect-alarm/issues"
   },
   "homepage": "https://github.com/hymond/homebridge-protect-alarm#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "upstream": "https://github.com/Mac2100/homebridge-protect-alarm"
 }

@@ -79,21 +79,19 @@ interval kicks in only while armed:
 
 ## Installation
 
-This fork isn't published to npm. Install it straight from GitHub:
+Search for **Protect Alarm** in the Homebridge UI plugin tab (pick the
+`@hymond` one), or install from npm:
 
 ```bash
-npm install -g hymond/homebridge-protect-alarm
-```
-
-Or clone and install from a local checkout:
-
-```bash
-git clone https://github.com/hymond/homebridge-protect-alarm.git
-npm install -g ./homebridge-protect-alarm
+npm install -g @hymond/homebridge-protect-alarm
 ```
 
 Then restart Homebridge. It registers the same `ProtectAlarm` platform as
 upstream, so an existing config block keeps working unchanged.
+
+> **Migrating from the upstream `homebridge-protect-alarm`?** Uninstall it
+> first — both register the `ProtectAlarm` platform, so running them together
+> conflicts. Your config block does not need to change.
 
 ## Setup
 
