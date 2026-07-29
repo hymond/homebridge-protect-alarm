@@ -1,7 +1,6 @@
 # Contributing
 
-Thanks for your interest! This plugin is intentionally small — one file, one
-dependency — and contributions that keep it that way are the easiest to merge.
+Thanks for your interest! This plugin is intentionally small — one file — and contributions that keep it that way are the easiest to merge.
 
 ## Reporting bugs
 
