@@ -161,6 +161,7 @@ selected and otherwise stays out of the way.
 | `Away profile … NOT FOUND` | Profile name mismatch — check the startup log for available names |
 | Tile stuck / not updating | Controller unreachable from the Homebridge host — test with the curl below |
 | `HTTP 404` on arm/disarm | Very old Protect firmware without the integration API — update UniFi OS / Protect |
+| API not found | Alarm Manager is configured for global, not local mode. Change in Settings > General > Advanced > Alarm Manager Mode - Set to Local. You'll have to recreate your alarms when you switch to local mode. |
 
 Quick connectivity test from the Homebridge host:
 
